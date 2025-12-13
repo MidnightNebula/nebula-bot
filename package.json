@@ -27,20 +27,20 @@
         "start": "tsx src/index.ts"
     },
     "dependencies": {
-        "@hono/node-server": "^1.19.4",
-        "discord.js": "^14.22.1",
-        "dotenv": "^17.2.2",
-        "hono": "^4.9.8"
+        "@hono/node-server": "^1.19.7",
+        "discord.js": "^14.25.1",
+        "dotenv": "^17.2.3",
+        "hono": "^4.11.0"
     },
     "devDependencies": {
-        "@eslint/js": "^9.36.0",
-        "@types/node": "^24.5.2",
-        "eslint": "^9.36.0",
+        "@eslint/js": "^9.39.2",
+        "@types/node": "^25.0.1",
+        "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-perfectionist": "^4.15.0",
-        "prettier": "^3.6.2",
-        "tsx": "^4.20.6",
-        "typescript": "^5.9.2",
-        "typescript-eslint": "^8.44.1"
+        "eslint-plugin-perfectionist": "^4.15.1",
+        "prettier": "^3.7.4",
+        "tsx": "^4.21.0",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.49.0"
     }
 }
