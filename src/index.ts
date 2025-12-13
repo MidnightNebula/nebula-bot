@@ -3,12 +3,11 @@ import { Events } from 'discord.js'
 import * as process from 'node:process'
 
 import { handleMonitoring } from '@/external/monitoring'
+import { featureLogging } from '@/features/logging'
+import { featureAutoRole } from '@/features/moderation'
+import { featureRoomHandler } from '@/features/room-handling'
 import { validateEnvVars } from '@/shared/config/env'
 import { client } from '@/shared/consts/client'
-
-import { featureLogging } from './features/logging'
-import { featureAutoRole } from './features/moderation'
-import { featureRoomHandler } from './features/room-handling'
 
 validateEnvVars()
 

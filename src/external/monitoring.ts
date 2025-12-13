@@ -9,7 +9,7 @@ export function handleMonitoring() {
     })
 
     const defaultPort = 3000
-    console.log('Monitoring erver is running on port', defaultPort)
+    console.log('Monitoring server is running on port', defaultPort)
 
     return serve({
         fetch: app.fetch,
