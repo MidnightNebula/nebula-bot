@@ -1,6 +1,3 @@
-> **_voice is our medium. code is our claws._**  
-> the server purrs when we speak. the channel bends when we arrive.
-
 ## Features
 
 - Logging
