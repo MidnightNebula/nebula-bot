@@ -1,13 +1,14 @@
 import { Events } from 'discord.js'
 
 import { createVoiceEmbed } from '@/features/logging/voice/embeds/voice'
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes } from '@/shared/consts/colors'
-import { logChannelId, PREVENT_DUPLICATE_MENTIONS } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
+import { PREVENT_DUPLICATE_MENTIONS } from '@/shared/config/state'
 
 export function voiceStreamingEvent() {
     client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
-        const textChannel = oldState.guild.channels.cache.get(logChannelId)
+        const textChannel = oldState.guild.channels.cache.get(ENV.LOG_CHANNEL_ID)
 
         const isTextChannelValid = textChannel?.isTextBased()
         if (!isTextChannelValid) return

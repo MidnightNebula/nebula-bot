@@ -1,8 +1,8 @@
 import { Events, AuditLogEvent, EmbedBuilder } from 'discord.js'
 
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes } from '@/shared/consts/colors'
-import { logChannelId } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
 
 const threeSeconds = 3000
 const waitForAuditLogsToPopulate = async () =>
@@ -10,7 +10,7 @@ const waitForAuditLogsToPopulate = async () =>
 
 export function kickUserEvent() {
     client.on(Events.GuildMemberRemove, async member => {
-        const textChannel = member.guild.channels.cache.get(logChannelId)
+        const textChannel = member.guild.channels.cache.get(ENV.LOG_CHANNEL_ID)
 
         if (!textChannel?.isTextBased()) return
 

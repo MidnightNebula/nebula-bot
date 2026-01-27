@@ -1,16 +1,21 @@
-export const ENV_VARS = {
-    TOKEN: 'TOKEN',
-    LOG_CHANNEL_ID: 'LOG_CHANNEL_ID',
-    // fill more if needed
-} as const
-
-export const requiredEnvVars = Object.values(ENV_VARS)
+export const ENV = {
+    TOKEN: process.env.TOKEN!,
+    LOG_CHANNEL_ID: process.env.LOG_CHANNEL_ID!,
+    CLIENT_ID: process.env.CLIENT_ID!,
+    GUILD_ID: process.env.GUILD_ID!
+} as const;
 
 export function validateEnvVars() {
-    const missingVars = requiredEnvVars.filter(varName => !process.env[varName])
+    const missingVars = Object.entries(ENV)
+        .filter(([key]) => !process.env[key])
+        .map(([key]) => key);
 
     if (missingVars.length > 0) {
-        console.error(`Missing required environment variables: ${missingVars.join(', ')}`)
-        process.exit(1)
+        console.error(
+            `Missing required environment variables: ${missingVars.join(', ')}`
+        );
+        process.exit(1);
     }
 }
+
+export const logChannelId = ENV.LOG_CHANNEL_ID;

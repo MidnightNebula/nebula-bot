@@ -2,9 +2,9 @@ import type { Invite } from 'discord.js'
 
 import { EmbedBuilder, Events } from 'discord.js'
 
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes } from '@/shared/consts/colors'
-import { logChannelId } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
 
 const guildInvites = new Map<string, Map<string, number>>()
 
@@ -55,7 +55,7 @@ const handleInviteDeletion = () => {
 
 const handleMemberJoin = () => {
     client.on(Events.GuildMemberAdd, async member => {
-        const logChannel = member.guild.channels.cache.get(logChannelId)
+        const logChannel = member.guild.channels.cache.get(ENV.LOG_CHANNEL_ID)
 
         if (!logChannel?.isTextBased()) return
 

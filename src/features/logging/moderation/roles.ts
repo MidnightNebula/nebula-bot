@@ -17,13 +17,14 @@ import {
     type PublicThreadChannel,
 } from 'discord.js'
 
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes, type LogEventType } from '@/shared/consts/colors'
-import { logChannelId, PREVENT_DUPLICATE_MENTIONS } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes, type LogEventType } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
+import {  PREVENT_DUPLICATE_MENTIONS } from '@/shared/config/state'
 
 export function roleUpdateEvent() {
     client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
-        const logChannel = newMember.guild.channels.cache.get(logChannelId)
+        const logChannel = newMember.guild.channels.cache.get(ENV.LOG_CHANNEL_ID)
 
         if (!logChannel || !logChannel.isTextBased()) return
 

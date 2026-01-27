@@ -1,7 +1,12 @@
-import { handleVoiceCreate } from "@/features/room-handling/autovoice/create"
-import { deleteEmpty } from "@/features/room-handling/autovoice/deleteEmptyVoice"
+import { commands } from "@/shared/config/commands"
+import { interactionCreateEvent } from "@/shared/lib/interaction-create"
+
+import { createTempVC } from "./auto-create-voice/create"
+import { deleteEmptyTempVC } from "./auto-create-voice/deleteEmptyVoice"
+import { pingCurrentVC } from "./ping-current-voice"
 
 export function featureRoomHandler() {
-    handleVoiceCreate()
-    deleteEmpty()
+    createTempVC()
+    deleteEmptyTempVC()
+    interactionCreateEvent(pingCurrentVC, commands.pingvc.name)
 }

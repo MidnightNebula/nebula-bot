@@ -1,9 +1,9 @@
 import { EmbedBuilder, Events } from 'discord.js'
 
 import { isInExcludedCategory } from '@/features/logging/shared/excluded'
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes } from '@/shared/consts/colors'
-import { logChannelId } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
 
 const messageEdits = new Map<string, string>()
 
@@ -11,7 +11,7 @@ export function editMessageEvent() {
     client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
         if (await isInExcludedCategory(newMessage)) return
 
-        const logChannel = newMessage.guild?.channels.cache.get(logChannelId)
+        const logChannel = newMessage.guild?.channels.cache.get(ENV.LOG_CHANNEL_ID)
         const isServer = newMessage.guild
         const isBot = newMessage.author?.bot
 

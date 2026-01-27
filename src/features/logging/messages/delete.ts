@@ -8,9 +8,9 @@ import {
 } from 'discord.js'
 
 import { isInExcludedCategory } from '@/features/logging/shared/excluded'
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes } from '@/shared/consts/colors'
-import { logChannelId } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
 
 const placeholderAvatar = new URL('./assets/images/placeholder-avatar.jpg', import.meta.url).href
 
@@ -18,7 +18,7 @@ export function deleteMessageEvent() {
     client.on(Events.MessageDelete, async message => {
         if (await isInExcludedCategory(message)) return
 
-        const logChannel = message.guild?.channels.cache.get(logChannelId)
+        const logChannel = message.guild?.channels.cache.get(ENV.LOG_CHANNEL_ID)
         const isServer = message.guild
         const isBot = message.author?.bot
 

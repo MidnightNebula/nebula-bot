@@ -1,6 +1,6 @@
 {
     "name": "nebula-bot",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "Discord bot for MidnightNebula",
     "keywords": [
         "bot",
@@ -27,20 +27,20 @@
         "start": "tsx src/index.ts"
     },
     "dependencies": {
-        "@hono/node-server": "^1.19.7",
+        "@hono/node-server": "^1.19.9",
         "discord.js": "^14.25.1",
         "dotenv": "^17.2.3",
-        "hono": "^4.11.0"
+        "hono": "^4.11.6"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.2",
-        "@types/node": "^25.0.1",
+        "@types/node": "^25.0.10",
         "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
-        "eslint-plugin-perfectionist": "^4.15.1",
-        "prettier": "^3.7.4",
+        "eslint-plugin-perfectionist": "^5.4.0",
+        "prettier": "^3.8.1",
         "tsx": "^4.21.0",
         "typescript": "^5.9.3",
-        "typescript-eslint": "^8.49.0"
+        "typescript-eslint": "^8.54.0"
     }
 }

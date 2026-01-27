@@ -2,12 +2,13 @@ import type { VoiceState } from 'discord.js'
 
 import { ChannelType, Events, PermissionFlagsBits } from 'discord.js'
 
-import { registerTempChannel } from '@/features/room-handling/autovoice/tempChannels'
-import { client } from '@/shared/consts/client'
+import { client } from '@/shared/config/client'
+
+import { registerTempChannel } from './tempChannels'
 
 export const LOBBY_CHANNEL_ID = '1408046517142687774'
 
-export function handleVoiceCreate() {
+export function createTempVC() {
     client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
         const userWasNotOnServer = !oldState.channel && newState.channel?.id === LOBBY_CHANNEL_ID // when user was not in the other channel
         const member = newState.member

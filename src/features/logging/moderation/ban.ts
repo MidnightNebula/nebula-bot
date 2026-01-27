@@ -1,12 +1,12 @@
 import { Events, AuditLogEvent, EmbedBuilder } from 'discord.js'
 
-import { client } from '@/shared/consts/client'
-import { getLogColor, LogEventTypes } from '@/shared/consts/colors'
-import { logChannelId } from '@/shared/consts/state'
+import { client } from '@/shared/config/client'
+import { getLogColor, LogEventTypes } from '@/shared/config/colors'
+import { ENV } from '@/shared/config/env'
 
 export function banUserEvent() {
     client.on(Events.GuildBanAdd, async ban => {
-        const logChannel = ban.guild.channels.cache.get(logChannelId)
+        const logChannel = ban.guild.channels.cache.get(ENV.LOG_CHANNEL_ID)
 
         if (!logChannel?.isTextBased()) return
 

@@ -1,7 +1,7 @@
 import { Events } from 'discord.js'
 
-import { client } from '@/shared/consts/client'
-import { Roles } from '@/shared/consts/roles'
+import { client } from '@/shared/config/client'
+import { Roles } from '@/shared/config/roles'
 
 export function autoRoleEvent() {
     client.on(Events.GuildMemberAdd, async member => {
