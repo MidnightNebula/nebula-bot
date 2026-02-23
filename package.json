@@ -33,7 +33,7 @@
         "hono": "^4.11.6"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.2",
+        "@eslint/js": "^9.39.3",
         "@types/node": "^25.0.10",
         "eslint": "^9.39.2",
         "eslint-config-prettier": "^10.1.8",
