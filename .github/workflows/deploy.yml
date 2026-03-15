@@ -53,6 +53,7 @@ jobs:
                       LOG_CHANNEL_ID=${{ secrets.LOG_CHANNEL_ID }}
                       CLIENT_ID=${{ secrets.CLIENT_ID }}
                       GUILD_ID=${{ secrets.GUILD_ID }}
+                      GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
                       EOF
 
                       # Stop and remove existing containers
