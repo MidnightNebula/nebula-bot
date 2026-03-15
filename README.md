@@ -3,6 +3,7 @@
 - Logging
 - Moderation
 - Room Handling
+- AI companion (friendly/angry versions)
 
 ## How to setup
 
@@ -18,10 +19,8 @@ We open doors to secret voice realms, whisper the weather outside, and count the
 We are:
 
 - 🖤 watchers of the voice void
-- 🕷 channel conjurers with `/createvc`
 - ☁️ weather-witches reading API skies
 - 🩶 archivists of logs.
-
 ---
 
 <div align="center">

@@ -4,7 +4,7 @@ import { client } from '@/shared/config/client'
 
 import { tempChannels } from './tempChannels'
 
-export function deleteEmptyTempVC() {
+export function deleteEmptyTempVCEvent() {
     client.on(Events.VoiceStateUpdate, async (oldState: VoiceState) => {
         if (oldState.channel && tempChannels.has(oldState.channel.id)) {
             const channel = oldState.channel
