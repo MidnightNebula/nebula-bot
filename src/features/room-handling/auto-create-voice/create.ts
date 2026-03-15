@@ -8,7 +8,7 @@ import { registerTempChannel } from './tempChannels'
 
 export const LOBBY_CHANNEL_ID = '1408046517142687774'
 
-export function createTempVC() {
+export function createTempVCEvent() {
     client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
         const userWasNotOnServer = !oldState.channel && newState.channel?.id === LOBBY_CHANNEL_ID // when user was not in the other channel
         const member = newState.member

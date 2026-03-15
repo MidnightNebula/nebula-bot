@@ -1,7 +1,7 @@
 import { Events, AuditLogEvent, EmbedBuilder } from 'discord.js'
 
+import { getLogColor, LogEventTypes } from '@/features/logging/shared/colors'
 import { client } from '@/shared/config/client'
-import { getLogColor, LogEventTypes } from '@/shared/config/colors'
 import { ENV } from '@/shared/config/env'
 
 export function banUserEvent() {

@@ -1,8 +1,8 @@
 import { Events } from 'discord.js'
 
+import { getLogColor, LogEventTypes } from '@/features/logging/shared/colors'
 import { createVoiceEmbed } from '@/features/logging/voice/embeds/voice'
 import { client } from '@/shared/config/client'
-import { getLogColor, LogEventTypes } from '@/shared/config/colors'
 import { ENV } from '@/shared/config/env'
 import { PREVENT_DUPLICATE_MENTIONS } from '@/shared/config/state'
 

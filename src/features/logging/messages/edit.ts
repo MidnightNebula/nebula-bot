@@ -1,8 +1,8 @@
 import { EmbedBuilder, Events } from 'discord.js'
 
+import { getLogColor, LogEventTypes } from '@/features/logging/shared/colors'
 import { isInExcludedCategory } from '@/features/logging/shared/excluded'
 import { client } from '@/shared/config/client'
-import { getLogColor, LogEventTypes } from '@/shared/config/colors'
 import { ENV } from '@/shared/config/env'
 
 const messageEdits = new Map<string, string>()
