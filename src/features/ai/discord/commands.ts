@@ -15,6 +15,7 @@ import {
     inititialMessageAngry,
     inititialMessageFriend,
     roles,
+    voices,
     type GuildConnectionState,
 } from '@/features/ai/config'
 import {
@@ -34,6 +35,8 @@ export enum AiCommands {
     Roles = 'ai-roles',
     SetRole = 'ai-set-role',
     CurrentRole = 'ai-current-role',
+    Voices = 'ai-voices',
+    SetVoice = 'ai-set-voice',
 }
 
 export const aiCommandsREST = [
@@ -66,6 +69,24 @@ export const aiCommandsREST = [
     new SlashCommandBuilder()
         .setName(AiCommands.CurrentRole)
         .setDescription('показать текущую роль'),
+    new SlashCommandBuilder()
+        .setName(AiCommands.Voices)
+        .setDescription('показать доступные голоса'),
+    new SlashCommandBuilder()
+        .setName(AiCommands.SetVoice)
+        .setDescription('поменять голос')
+        .addStringOption(option =>
+            option
+                .setName('voice')
+                .setDescription('выберите голос')
+                .setRequired(true)
+                .addChoices(
+                    ...voices.map(voice => ({
+                        name: `${voice.name} - ${voice.description}`,
+                        value: voice.name,
+                    })),
+                ),
+        ),
 ].map(c => c.toJSON())
 
 export const aiCommands: Record<AiCommands, CommandHandler> = {
@@ -75,9 +96,11 @@ export const aiCommands: Record<AiCommands, CommandHandler> = {
     [AiCommands.Roles]: { type: CommandType.Base, handler: aiRolesCommand },
     [AiCommands.SetRole]: { type: CommandType.Chat, handler: aiSetRoleCommand },
     [AiCommands.CurrentRole]: { type: CommandType.Base, handler: aiCurrentRoleCommand },
+    [AiCommands.Voices]: { type: CommandType.Base, handler: aiVoicesCommand },
+    [AiCommands.SetVoice]: { type: CommandType.Chat, handler: aiSetVoiceCommand },
 }
 
-export async function aiJoinCommand(interaction: CommandInteraction<CacheType>) {
+async function aiJoinCommand(interaction: CommandInteraction<CacheType>) {
     const member = interaction.member as GuildMember
     const voiceChannel = member.voice.channel
 
@@ -128,7 +151,7 @@ export async function aiJoinCommand(interaction: CommandInteraction<CacheType>) 
     }
 }
 
-export async function aiLeaveCommand(interaction: CommandInteraction<CacheType>) {
+async function aiLeaveCommand(interaction: CommandInteraction<CacheType>) {
     const guildId = interaction.guild?.id
     if (!guildId) return
 
@@ -136,7 +159,7 @@ export async function aiLeaveCommand(interaction: CommandInteraction<CacheType>)
     await interaction.reply('👋 Ушел отдыхать!')
 }
 
-export async function aiResetCommand(interaction: CommandInteraction<CacheType>) {
+async function aiResetCommand(interaction: CommandInteraction<CacheType>) {
     const guildId = interaction.guild?.id
     if (!guildId) {
         return interaction.reply('No guild found!')
@@ -162,7 +185,7 @@ export async function aiResetCommand(interaction: CommandInteraction<CacheType>)
     }
 }
 
-export async function aiRolesCommand(interaction: CommandInteraction<CacheType>) {
+async function aiRolesCommand(interaction: CommandInteraction<CacheType>) {
     const rolesList = roles
         .map((role, index) => `**${index + 1}. ${role.name}**\n${role.description}`)
         .join('\n\n')
@@ -176,7 +199,7 @@ export async function aiRolesCommand(interaction: CommandInteraction<CacheType>)
     await interaction.reply({ embeds: [rolesEmbed] })
 }
 
-export async function aiSetRoleCommand(interaction: ChatInputCommandInteraction<CacheType>) {
+async function aiSetRoleCommand(interaction: ChatInputCommandInteraction<CacheType>) {
     const guildId = interaction.guild?.id
     if (!guildId) {
         return interaction.reply('No guild found!')
@@ -237,7 +260,7 @@ export async function aiSetRoleCommand(interaction: ChatInputCommandInteraction<
     }
 }
 
-export async function aiCurrentRoleCommand(interaction: CommandInteraction<CacheType>) {
+async function aiCurrentRoleCommand(interaction: CommandInteraction<CacheType>) {
     const guildId = interaction.guild?.id
     if (!guildId) {
         return interaction.reply('No guild found!')
@@ -257,4 +280,78 @@ export async function aiCurrentRoleCommand(interaction: CommandInteraction<Cache
     }
 
     await interaction.reply({ embeds: [roleEmbed] })
+}
+
+async function aiVoicesCommand(interaction: CommandInteraction<CacheType>) {
+    const voicesList = voices
+        .map((voice, index) => `**${index + 1}. ${voice.name}**\n${voice.description}`)
+        .join('\n\n')
+
+    const voicesEmbed = {
+        title: '🎤 Доступные голоса',
+        description: voicesList,
+        color: 0x00ffff,
+        footer: { text: 'Голоса используются для озвучки разных ролей' },
+    }
+
+    await interaction.reply({ embeds: [voicesEmbed] })
+}
+
+async function aiSetVoiceCommand(interaction: ChatInputCommandInteraction<CacheType>) {
+    const guildId = interaction.guild?.id
+    if (!guildId) {
+        return interaction.reply('No guild found!')
+    }
+
+    const guildState = guildConnections.get(guildId)
+    if (!guildState) {
+        return interaction.reply('❌ Не подключен к войсу! Используй `/ai-join` сначала.')
+    }
+
+    const voiceName = interaction.options.getString('voice', true)
+    const selectedVoice = voices.find(voice => voice.name === voiceName)
+
+    if (!selectedVoice) {
+        return interaction.reply(
+            `❌ Голос "${voiceName}" не найден! Используй \`/ai-voices\` чтобы посмотреть доступные голоса.`,
+        )
+    }
+
+    try {
+        config.speechConfig = {
+            voiceConfig: {
+                prebuiltVoiceConfig: {
+                    voiceName: selectedVoice.name,
+                },
+            },
+        }
+        guildState.currentVoiceName = selectedVoice.name
+
+        clearAiSession(guildState)
+        clearOutputStream(guildState)
+        guildState.audioPlayer.stop()
+
+        const session = await initAiSession(guildState)
+
+        const currentRole = roles[guildState.currentRoleIndex]
+        const initMessage = `Теперь ты ${currentRole.name}. ${currentRole.description.split('Тон:')[1]?.trim() || ''} 
+        ${guildState.currentRoleIndex === 0 ? inititialMessageFriend : inititialMessageAngry}`
+
+        session.sendClientContent({
+            turns: initMessage,
+        })
+
+        const voiceEmbed = {
+            title: '🎤 Голос успешно изменен',
+            description: `**Новый голос:** ${selectedVoice.name}\n\n**Описание:** ${selectedVoice.description}`,
+            color: 0x00ffff,
+            footer: { text: 'Ии теперь говорит новым голосом!' },
+        }
+
+        await interaction.reply({ embeds: [voiceEmbed] })
+        console.log(`Voice changed to "${selectedVoice.name}" for guild ${guildId}`)
+    } catch (error) {
+        console.error('Failed to set voice:', error)
+        await interaction.reply('❌ Failed to change AI voice!')
+    }
 }
