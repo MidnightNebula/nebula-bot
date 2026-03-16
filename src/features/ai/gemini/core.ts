@@ -26,6 +26,19 @@ export function clearOutputStream(guildState: GuildConnectionState) {
     guildState.outputStream = undefined
 }
 
+export function clearAiSession(guildState: GuildConnectionState) {
+    if (guildState.aiSession) {
+        guildState.aiSession.close()
+        guildState.aiSession = undefined
+    }
+}
+
+export function clearAiPrompt(guildState: GuildConnectionState) {
+    if (guildState.customPrompt) {
+        guildState.customPrompt = undefined
+    }
+}
+
 function playAudioFromAi(guildState: GuildConnectionState, audioBuffer: Buffer) {
     if (guildState.audioPlayer.state.status === AudioPlayerStatus.Idle) {
         clearOutputStream(guildState)
@@ -66,13 +79,6 @@ async function modelTurnFromAi(guildState: GuildConnectionState, message: LiveSe
         } else if (part.text) {
             console.log('AI sent text response:', part.text)
         }
-    }
-}
-
-export function clearAiSession(guildState: GuildConnectionState) {
-    if (guildState.aiSession) {
-        guildState.aiSession.close()
-        guildState.aiSession = undefined
     }
 }
 
@@ -219,10 +225,4 @@ export async function cleanupGuildConnection(guildId: string, reason: string = '
     guildConnections.delete(guildId)
 
     console.log(`✅ Cleanup completed for guild ${guildId}`)
-}
-
-export function clearAiPrompt(guildState: GuildConnectionState) {
-    if (guildState.customPrompt) {
-        guildState.customPrompt = undefined
-    }
 }
