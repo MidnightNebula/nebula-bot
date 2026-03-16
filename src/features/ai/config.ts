@@ -11,6 +11,8 @@ export interface GuildConnectionState {
     audioPlayer: ReturnType<typeof createAudioPlayer>
     inputStream: Map<string, AudioReceiveStream>
     currentRoleIndex: number
+    currentVoiceName?: string
+    customPrompt?: string
     outputStream?: PassThrough
     aiSession?: Session
 }
@@ -136,3 +138,31 @@ export const config = {
 }
 export const inititialMessageFriend = 'Давай поговорим'
 export const inititialMessageAngry = 'Давай петушится'
+
+export const voices = [
+    { name: 'Zephyr', description: 'Яркий, высокий тембр, женский' },
+    { name: 'Upbeat', description: 'Оптимистичный, средний тембр, мужской' },
+    { name: 'Charon', description: 'Информативный, низкий тембр, мужской' },
+    { name: 'Kore', description: 'Твердый, средний тембр, женский' },
+    { name: 'Fenrir', description: 'Возбужденный, средне-низкий тембр, мужской' },
+    { name: 'Leda', description: 'Юный, высокий тембр, женский' },
+    { name: 'Orus', description: 'Твердый, средне-низкий тембр, мужской' },
+    { name: 'Aoede', description: 'Легкий, средний тембр, женский' },
+    { name: 'Callirrhoe', description: 'Легкий в общении, средний тембр, женский' },
+    { name: 'Autonoe', description: 'Яркий, средний тембр, женский' },
+    { name: 'Enceladus', description: 'Придыхательный, низкий тембр, мужской' },
+    { name: 'Lapetus', description: 'Четкий, средне-низкий тембр, мужской' },
+    { name: 'Umbriel', description: 'Легкий в общении, средне-низкий тембр, мужской' },
+    { name: 'Algieba', description: 'Плавный, низкий тембр, мужской' },
+    { name: 'Despina', description: 'Плавный, средний тембр, женский' },
+    { name: 'Erinome', description: 'Четкий, средний тембр, женский' },
+    { name: 'Algenib', description: 'Хриплый, низкий тембр, мужской' },
+    { name: 'Rasalgethi', description: 'Информативный, средний тембр, мужской' },
+    { name: 'Laomedeia', description: 'Оптимистичный, высокий тембр, женский' },
+    { name: 'Archernar', description: 'Мягкий, высокий тембр, женский' },
+    { name: 'Alnilam', description: 'Твердый, средне-низкий тембр, мужской' },
+    { name: 'Gacrux', description: 'Зрелый, средний тембр, женский' },
+    { name: 'Pulcherrima', description: 'Прямолинейный, средний тембр, женский' },
+    { name: 'Vindemiatrix', description: 'Мягкий, средний тембр, женский' },
+    { name: 'Sulafat', description: 'Теплый, средний тембр, женский' },
+]

@@ -15,7 +15,7 @@ featureModeration()
 featureRoomHandler()
 featureAi()
 
-await initCommands()
 await initServer()
+await initCommands()
 
 handleMonitoring()
