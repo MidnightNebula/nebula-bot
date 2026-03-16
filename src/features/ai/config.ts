@@ -160,13 +160,8 @@ export const voices = [
     { name: 'Laomedeia', description: 'Оптимистичный, высокий тембр, женский' },
     { name: 'Archernar', description: 'Мягкий, высокий тембр, женский' },
     { name: 'Alnilam', description: 'Твердый, средне-низкий тембр, мужской' },
-    { name: 'Schedar', description: 'Ровный, средне-низкий тембр, мужской' },
     { name: 'Gacrux', description: 'Зрелый, средний тембр, женский' },
     { name: 'Pulcherrima', description: 'Прямолинейный, средний тембр, женский' },
-    { name: 'Achird', description: 'Дружелюбный, средне-низкий тембр, мужской' },
-    { name: 'Zubenelgenubi', description: 'Непринужденный, средне-низкий тембр, мужской' },
     { name: 'Vindemiatrix', description: 'Мягкий, средний тембр, женский' },
-    { name: 'Sadachbia', description: 'Живой, низкий тембр, мужской' },
-    { name: 'Sadaltager', description: 'Знающий, средний тембр, мужской' },
     { name: 'Sulafat', description: 'Теплый, средний тембр, женский' },
 ]
