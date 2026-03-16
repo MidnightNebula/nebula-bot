@@ -206,6 +206,7 @@ export async function cleanupGuildConnection(guildId: string, reason: string = '
     guildState.audioPlayer.stop()
     clearAiSession(guildState)
     clearOutputStream(guildState)
+    clearAiPrompt(guildState)
 
     try {
         if (guildState.voiceConnection.state.status !== VoiceConnectionStatus.Destroyed) {
@@ -218,4 +219,10 @@ export async function cleanupGuildConnection(guildId: string, reason: string = '
     guildConnections.delete(guildId)
 
     console.log(`✅ Cleanup completed for guild ${guildId}`)
+}
+
+export function clearAiPrompt(guildState: GuildConnectionState) {
+    if (guildState.customPrompt) {
+        guildState.customPrompt = undefined
+    }
 }

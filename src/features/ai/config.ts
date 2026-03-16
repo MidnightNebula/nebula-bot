@@ -12,6 +12,7 @@ export interface GuildConnectionState {
     inputStream: Map<string, AudioReceiveStream>
     currentRoleIndex: number
     currentVoiceName?: string
+    customPrompt?: string
     outputStream?: PassThrough
     aiSession?: Session
 }

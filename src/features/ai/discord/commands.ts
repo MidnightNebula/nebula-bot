@@ -25,6 +25,7 @@ import {
     cleanupGuildConnection,
     clearAiSession,
     clearOutputStream,
+    clearAiPrompt,
 } from '@/features/ai/gemini/core'
 import { CommandType, type CommandHandler } from '@/shared/lib/commands'
 
@@ -37,6 +38,7 @@ export enum AiCommands {
     CurrentRole = 'ai-current-role',
     Voices = 'ai-voices',
     SetVoice = 'ai-set-voice',
+    Prompt = 'ai-prompt',
 }
 
 export const aiCommandsREST = [
@@ -87,6 +89,16 @@ export const aiCommandsREST = [
                     })),
                 ),
         ),
+    new SlashCommandBuilder()
+        .setName(AiCommands.Prompt)
+        .setDescription('дать AI временную инструкцию как себя вести')
+        .addStringOption(option =>
+            option
+                .setName('prompt')
+                .setDescription('напишите инструкцию для AI (макс 500 символов)')
+                .setRequired(true)
+                .setMaxLength(500),
+        ),
 ].map(c => c.toJSON())
 
 export const aiCommands: Record<AiCommands, CommandHandler> = {
@@ -98,6 +110,7 @@ export const aiCommands: Record<AiCommands, CommandHandler> = {
     [AiCommands.CurrentRole]: { type: CommandType.Base, handler: aiCurrentRoleCommand },
     [AiCommands.Voices]: { type: CommandType.Base, handler: aiVoicesCommand },
     [AiCommands.SetVoice]: { type: CommandType.Chat, handler: aiSetVoiceCommand },
+    [AiCommands.Prompt]: { type: CommandType.Chat, handler: aiPromptCommand },
 }
 
 async function aiJoinCommand(interaction: CommandInteraction<CacheType>) {
@@ -134,6 +147,7 @@ async function aiJoinCommand(interaction: CommandInteraction<CacheType>) {
             currentRoleIndex: 0,
         }
 
+        clearAiPrompt(guildState)
         guildConnections.set(voiceChannel.guild.id, guildState)
 
         audioPlayer.on('error', error => {
@@ -171,6 +185,7 @@ async function aiResetCommand(interaction: CommandInteraction<CacheType>) {
     }
 
     try {
+        clearAiPrompt(guildState)
         clearAiSession(guildState)
         clearOutputStream(guildState)
         guildState.audioPlayer.stop()
@@ -221,6 +236,8 @@ async function aiSetRoleCommand(interaction: ChatInputCommandInteraction<CacheTy
     }
 
     try {
+        clearAiPrompt(guildState)
+
         config.systemInstruction = {
             parts: [{ text: selectedRole.description }],
         }
@@ -353,5 +370,62 @@ async function aiSetVoiceCommand(interaction: ChatInputCommandInteraction<CacheT
     } catch (error) {
         console.error('Failed to set voice:', error)
         await interaction.reply('❌ Failed to change AI voice!')
+    }
+}
+
+async function aiPromptCommand(interaction: ChatInputCommandInteraction<CacheType>) {
+    const guildId = interaction.guild?.id
+    if (!guildId) {
+        return interaction.reply('No guild found!')
+    }
+
+    const guildState = guildConnections.get(guildId)
+    if (!guildState) {
+        return interaction.reply('❌ Не подключен к войсу! Используй `/ai-join` сначала.')
+    }
+
+    const prompt = interaction.options.getString('prompt', true)
+
+    try {
+        guildState.customPrompt = prompt
+
+        clearAiSession(guildState)
+        clearOutputStream(guildState)
+        guildState.audioPlayer.stop()
+
+        const session = await initAiSession(guildState)
+        const currentRole = roles[guildState.currentRoleIndex]
+        const initMessage = `Ты ${currentRole.name}. ${currentRole.description.split('Тон:')[1]?.trim() || ''}
+        ИНСТРУКЦИЯ НА ЭТУ СЕССИЮ: ${prompt}
+        ${inititialMessageFriend}`
+
+        session.sendClientContent({
+            turns: initMessage,
+        })
+
+        const promptEmbed = {
+            title: '🤖 Временная инструкция применена',
+            description: `**Инструкция:**\n${prompt}`,
+            color: 0x9b59b6,
+            fields: [
+                {
+                    name: '🎭 Роль',
+                    value: currentRole.name,
+                    inline: true,
+                },
+                {
+                    name: '⏱️ Действует',
+                    value: 'до смены роли или перезапуска',
+                    inline: true,
+                },
+            ],
+            footer: { text: 'Инструкция автоматически очистится при смене роли или перезапуске' },
+        }
+
+        await interaction.reply({ embeds: [promptEmbed] })
+        console.log(`Custom prompt applied for guild ${guildId}: ${prompt}`)
+    } catch (error) {
+        console.error('Failed to apply custom prompt:', error)
+        await interaction.reply('❌ Не удалось применить инструкцию!')
     }
 }
