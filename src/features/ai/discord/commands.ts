@@ -147,13 +147,13 @@ async function aiJoinCommand(interaction: CommandInteraction<CacheType>) {
             currentRoleIndex: 0,
         }
 
-        clearAiPrompt(guildState)
         guildConnections.set(voiceChannel.guild.id, guildState)
 
         audioPlayer.on('error', error => {
             console.error('Audio player error:', error)
         })
 
+        clearAiPrompt(guildState)
         await initAiSession(guildState)
         sendInitMessageToAi(guildState)
         botAudioToAi(guildState)
