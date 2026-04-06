@@ -4,9 +4,8 @@ import { ChannelType, Events, PermissionFlagsBits } from 'discord.js'
 
 import { client } from '@/shared/config/client'
 
-import { registerTempChannel } from './tempChannels'
-
 export const LOBBY_CHANNEL_ID = '1408046517142687774'
+export const tempChannels = new Set<string>()
 
 export function createTempVCEvent() {
     client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
@@ -68,7 +67,13 @@ const createChannel = async (newState: VoiceState) => {
         },
     ]
 
-    const channelName = `${member.user.username}'s Room`
+    const safeChannelName = (name: string) =>
+        name
+            .toLowerCase()
+            .replace(/[^a-z0-9-_]/g, '-')
+            .replace(/-+/g, '-')
+
+    const channelName = `${safeChannelName(member.displayName)}-${member.id}`
 
     const newChannel = await newState.guild.channels.create({
         name: channelName,
@@ -78,9 +83,23 @@ const createChannel = async (newState: VoiceState) => {
         permissionOverwrites,
     })
 
-    registerTempChannel(newChannel)
+    tempChannels.add(newChannel.id)
+    console.log(`Registered temp channel: ${newChannel.id}`)
 
     await member.voice.setChannel(newChannel)
 
     return newChannel
+}
+
+export function deleteEmptyTempVCEvent() {
+    client.on(Events.VoiceStateUpdate, async (oldState: VoiceState) => {
+        if (oldState.channel && tempChannels.has(oldState.channel.id)) {
+            const channel = oldState.channel
+
+            if (channel.members.size === 0) {
+                await channel.delete().catch(() => {})
+                tempChannels.delete(channel.id)
+            }
+        }
+    })
 }
